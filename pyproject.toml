@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pytoolbase"
+authors = [
+    {name = "Simone Mozzaia", email = "info@simonemozzaia.it"},
+]
+version = "0.0.1"
+description = "Python Utilities"
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = ["python", "pytoolbase"]
+license = {text = "BSD-3-Clause"}
+dynamic = ["dependencies"]
+
+[tool.setuptools.packages.find]
+where = ["src/pytoolbase"]
+include = ["src/pytoolbase*"]
+namespaces = false
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
