@@ -1,5 +1,7 @@
 import logging
 import json
+import os.path
+from dotenv import dotenv_values
 
 
 class Configuration:
@@ -12,6 +14,18 @@ class Configuration:
         
     def __init__(self):
         self.__custom_logger = logging.getLogger(__name__)
+
+    def get_value_from_env_file(self, filepath):
+        """
+
+        """
+        self.__custom_logger.info(f'get_value_from_env_file')
+
+        if os.path.exists(filepath):
+            return dotenv_values(filepath)
+
+        self.__custom_logger.critical(f'Cannot load {filepath} file')
+        return None
         
     def get_value_from_json(self, json_file, key, sub_key):
         """

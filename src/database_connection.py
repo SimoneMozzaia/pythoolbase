@@ -2,8 +2,8 @@ import jaydebeapi as jdb
 import logging
 import pandas as pd
 import os
-from .configuration_file import Configuration
-from .path_manipulation import PathManipulation
+from configuration_file import Configuration
+from path_manipulation import PathManipulation
 
 
 class Database:
@@ -22,23 +22,22 @@ class Database:
         self.__custom_logger = logging.getLogger(__name__)
         self.__path_man_class = PathManipulation()
 
-    def connect_to_database(self, environment):
+    def connect_to_database(self, environment, country):
         self.__custom_logger.info(f"Application entered in module {__name__}.")
+        jar_path = r'.\external_files\jt400-11.1.jar'
 
-        user_pw_json_path = os.path.join(self.__path_man_class.get_secrets_path('secrets'), 'secrets.json')
-        conn_files_json_path = os.path.join(self.__path_man_class.get_secrets_path('secrets'), 'env_paths.json')
-        jar_path = os.path.join(self.__path_man_class.get_external_files_path('external_files'), 'jt400-11.1.jar')
+        country_env_path = self.__path_man_class.get_country_env_file(
+                                            environment=environment,
+                                            country=country)
+        country_env_secrets = self.__config_class.get_value_from_env_file(country_env_path)
+        general_env_path = self.__path_man_class.get_env_path()
+        general_env_secrets = self.__config_class.get_value_from_env_file(general_env_path)
 
-        server_env = environment + '_host'
-        user_env = environment + '_user'
-
-        jdbc_driver = self.__config_class.get_value_from_json(conn_files_json_path, "db_connection_files",
-                                                              "jdbc_driver")
-        jdbc = self.__config_class.get_value_from_json(conn_files_json_path, "db_connection_files", "jdbc")
-        server = self.__config_class.get_value_from_json(conn_files_json_path, "db_connection_server", server_env)
-
-        user = self.__config_class.get_value_from_json(user_pw_json_path, "db_connection_user", user_env)
-        password = self.__config_class.get_value_from_json(user_pw_json_path, "db_connection_password", "password")
+        jdbc_driver = general_env_secrets["jdbc_driver"]
+        jdbc = general_env_secrets["jdbc"]
+        server = country_env_secrets["db_host"]
+        user = country_env_secrets["db_user"]
+        password = country_env_secrets["db_password"]
 
         # Example of connection to a DB2 server
         connection = jdb.connect(

@@ -8,13 +8,14 @@ __pycache__/
 *$py.class
 
 # Secrets
-secrets/
+*/secrets/
+.env
 
 # C extensions
 *.so
 
 # Tests
-/test
+*/test
 
 # Distribution / packaging
 .Python

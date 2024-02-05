@@ -16,8 +16,8 @@ license = {text = "BSD-3-Clause"}
 dynamic = ["dependencies"]
 
 [tool.setuptools.packages.find]
-where = ["src/pytoolbase"]
-include = ["src/pytoolbase*"]
+include = ["src*"]
+exclude = ["secrets*", "test*"]
 namespaces = false
 
 [tool.setuptools.dynamic]
