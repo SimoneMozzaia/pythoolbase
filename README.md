@@ -10,7 +10,30 @@ to share some of my most used functions while refactoring some.
 The project is written in Python
 
 ## Installation
-Just the clone repository and use the functions that interest you
+Just the clone repo and use the functions that interest you
+
+# Usage 
+```
+Clone the repository
+
+Copy the requirements.txt inside your python package folder
+
+Install the package and the requirements in your virtualenv with pip 
+    pip install C:\custom_apps\programming_languages\repositories\pytoolbase
+    pip install -r requirements.txt
+
+Import the package and its functions
+```
+Example
+
+```python
+from pytoolbase.database_connection import Database
+def main():
+    db = Database()
+    connection = db.connect_to_database("env","country")
+    # Do something
+    connection.close()
+```
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first
