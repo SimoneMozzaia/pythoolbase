@@ -8,7 +8,8 @@ __pycache__/
 *$py.class
 
 # Secrets
-*/secrets/
+pytoolbase/secrets/
+*/secrets/*
 .env
 
 # C extensions

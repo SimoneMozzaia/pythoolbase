@@ -1,8 +1,8 @@
 import jaydebeapi as jdb
 import logging
 import pandas as pd
-from configuration_file import Configuration
-from path_manipulation import PathManipulation
+from .configuration_file import Configuration
+from .path_manipulation import PathManipulation
 
 
 class Database:
@@ -29,7 +29,7 @@ class Database:
                                             environment=environment,
                                             country=country)
         country_env_secrets = self.__config_class.get_value_from_env_file(country_env_path)
-        general_env_path = self.__path_man_class.get_env_path()
+        general_env_path = self.__path_man_class.get_general_env_file()
         general_env_secrets = self.__config_class.get_value_from_env_file(general_env_path)
 
         jdbc_driver = general_env_secrets["jdbc_driver"]

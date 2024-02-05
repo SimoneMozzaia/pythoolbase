@@ -1,8 +1,8 @@
 import base64
 import mimetypes
 import os
-from path_manipulation import PathManipulation
-from configuration_file import Configuration
+from .path_manipulation import PathManipulation
+from .configuration_file import Configuration
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
