@@ -1,7 +1,6 @@
 import jaydebeapi as jdb
 import logging
 import pandas as pd
-import os
 from configuration_file import Configuration
 from path_manipulation import PathManipulation
 
