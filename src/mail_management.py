@@ -15,15 +15,18 @@ class SendEmailWithGoogleMail:
     __creds = None
     __token_path = r'.\secrets\token.json'
     __cred_file_path = r'.\secrets\credentials.json'
-    __ext_file_path = r'.\external_files'
     __scopes = ['https://www.googleapis.com/auth/gmail.compose']
     __gmail_env_file = None
     __path_class = None
     __config_class = None
+    __email_body = None
+    __attachment_file = None
 
-    def __init__(self):
+    def __init__(self, email_body, attachment_file):
         self.__path_class = PathManipulation()
         self.__config_class = Configuration()
+        self.__email_body = email_body
+        self.__attachment_file = attachment_file
         self.__gmail_env_file = self.__config_class.get_value_from_env_file(
                                         os.path.join(self.__path_class.get_env_path(), '.gmail-env')
                                         )
@@ -34,7 +37,10 @@ class SendEmailWithGoogleMail:
                                     cred_file_path=self.__cred_file_path
                                     )
         if with_attachments:
-            self.__call_gmail_api_with_attachments(os.path.join(self.__ext_file_path, 'test.xlsx'))
+            self.__call_gmail_api_with_attachments(
+                self.__email_body,
+                self.__attachment_file
+            )
 
     def __generate_credentials(self, creds, token_path, cred_file_path):
         if os.path.exists(token_path):
@@ -51,7 +57,7 @@ class SendEmailWithGoogleMail:
         with open(token_path, "w") as token:
             token.write(creds.to_json())
 
-    def __call_gmail_api_with_attachments(self, attachment_file):
+    def __call_gmail_api_with_attachments(self, email_body, attachment_file):
         """
         For further info please refer to https://developers.google.com/gmail/api/guides/sending
         """
@@ -60,11 +66,11 @@ class SendEmailWithGoogleMail:
             mime_message = EmailMessage()
 
             # Message body
-            mime_message.set_content("Hi, this is automated mail with attachment.\nPlease do not reply.")
+            mime_message.set_content(email_body)
 
             mime_message["To"] = self.__gmail_env_file['message_to']
             mime_message["From"] = self.__gmail_env_file['message_from']
-            mime_message["Subject"] = "Automated message"
+            mime_message["Subject"] = self.__gmail_env_file['message_subject']
 
             # Manage attachments
             attachment_filename = attachment_file
@@ -92,7 +98,3 @@ class SendEmailWithGoogleMail:
 
         except HttpError as error:
             print(f'Error: {error}')
-
-
-g = SendEmailWithGoogleMail()
-g.send_email(True)
