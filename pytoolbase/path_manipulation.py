@@ -9,22 +9,18 @@ class PathManipulation:
 
     Attributes:
         custom_logger   Instance of the custom logger class. Used for logging purposes
-        src_path    Path to the project root
+        env_path    Path where the .env files are stored (f.e. r'.\secrets\env')
+        secrets_path    Path where the secrets files are stored (f.e. r'.\secrets)
     """
     __custom_logger = None
-    __src_path = None
-    __env_path = r'.\secrets\env'
+    __env_path = None
+    __secrets_path = None
     __general_env_filename = '.env'
 
-    def __init__(self):
+    def __init__(self, env_path, secrets_path):
         self.__custom_logger = logging.getLogger(__name__)
-        self.__src_path = Path(os.getcwd()).resolve().parents[1]
-
-    def get_secrets_path(self, local_secrets_folder):
-        return os.path.join(self.__src_path, local_secrets_folder)
-
-    def get_external_files_path(self, local_ext_files_folder):
-        return os.path.join(self.__src_path, local_ext_files_folder)
+        self.__env_path = env_path
+        self.__secrets_path = secrets_path
 
     def get_general_env_file(self):
         """Getter for the generic .env file
@@ -39,6 +35,12 @@ class PathManipulation:
                 The path to the .env folder
         """
         return self.__env_path
+
+    def get_token_path(self):
+        return os.path.join(self.__secrets_path, 'token.json')
+
+    def get_credentials_path(self):
+        return os.path.join(self.__secrets_path, 'credentials.json')
 
     def get_country_env_file(self, country, environment):
         country_env_filename = '.' + country + '-' + environment + '-env'

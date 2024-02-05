@@ -16,10 +16,10 @@ class Database:
             cls.__instance = super(Database, cls).__call__(*args, **kwargs)
         return cls.__instance
 
-    def __init__(self):
+    def __init__(self, path_manipulation_class):
         self.__config_class = Configuration()
         self.__custom_logger = logging.getLogger(__name__)
-        self.__path_man_class = PathManipulation()
+        self.__path_man_class = path_manipulation_class
 
     def connect_to_database(self, environment, country):
         self.__custom_logger.info(f"Application entered in module {__name__}.")

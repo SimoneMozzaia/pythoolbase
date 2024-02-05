@@ -1,7 +1,6 @@
 import base64
 import mimetypes
 import os
-from .path_manipulation import PathManipulation
 from .configuration_file import Configuration
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -13,8 +12,8 @@ from googleapiclient.errors import HttpError
 
 class SendEmailWithGoogleMail:
     __creds = None
-    __token_path = r'.\secrets\token.json'
-    __cred_file_path = r'.\secrets\credentials.json'
+    __token_path = None
+    __cred_file_path = None
     __scopes = ['https://www.googleapis.com/auth/gmail.compose']
     __gmail_env_file = None
     __path_class = None
@@ -22,14 +21,16 @@ class SendEmailWithGoogleMail:
     __email_body = None
     __attachment_file = None
 
-    def __init__(self, email_body, attachment_file):
-        self.__path_class = PathManipulation()
+    def __init__(self, email_body, attachment_file, path_manipulation_class):
+        self.__path_class = path_manipulation_class
         self.__config_class = Configuration()
         self.__email_body = email_body
         self.__attachment_file = attachment_file
         self.__gmail_env_file = self.__config_class.get_value_from_env_file(
                                         os.path.join(self.__path_class.get_env_path(), '.gmail-env')
                                         )
+        self.__token_path = self.__path_class.get_token_path()
+        self.__cred_file_path = self.__path_class.get_credentials_path()
 
     def send_email(self, with_attachments):
         self.__generate_credentials(creds=self.__creds,
