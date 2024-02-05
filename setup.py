@@ -1,4 +1,4 @@
-from setuptools import find_packages, setup
+from setuptools import setup
 
 setup(name="pytoolbase",
       version="0.1",
@@ -8,5 +8,5 @@ setup(name="pytoolbase",
       platforms=["any"],  # or more specific, e.g. "win32", "cygwin", "osx"
       license="GPLv3",
       url="https://github.com/SimoneMozzaia/pythoolbase",
-      packages=find_packages(),
+      packages=['pytoolbase',]
       )
