@@ -2,21 +2,19 @@ import base64
 import mimetypes
 import os
 from .configuration_file import Configuration
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
 from email.message import EmailMessage
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from .my_logger import CustomLogger
 import logging
+from .credentials_manager import CustomCredentialsManager
 
 
 class SendEmailWithGoogleMail:
+    __creds_class = None
     __creds = None
     __token_path = None
     __cred_file_path = None
-    __scopes = ['https://www.googleapis.com/auth/gmail.compose']
     __gmail_env_file = None
     __path_class = None
     __config_class = None
@@ -27,40 +25,23 @@ class SendEmailWithGoogleMail:
     def __init__(self, email_body, attachment_file, path_manipulation_class):
         self.__custom_logger = CustomLogger('SendEmailWithGoogleMailClass').custom_logger(logging.WARNING)
         self.__path_class = path_manipulation_class
+        self.__creds_class = CustomCredentialsManager(self.__path_class)
         self.__config_class = Configuration()
         self.__email_body = email_body
         self.__attachment_file = attachment_file
         self.__gmail_env_file = self.__config_class.get_value_from_env_file(
                                         os.path.join(self.__path_class.get_env_path(), '.gmail-env')
                                         )
-        self.__token_path = self.__path_class.get_token_path()
-        self.__cred_file_path = self.__path_class.get_credentials_path()
 
     def send_email(self, with_attachments):
-        self.__generate_credentials(creds=self.__creds,
-                                    token_path=self.__token_path,
-                                    cred_file_path=self.__cred_file_path
-                                    )
+        self.__creds_class.generate_google_credentials()
+        self.__creds = self.__creds_class.get_google_credentials()
+
         if with_attachments:
             self.__call_gmail_api_with_attachments(
                 self.__email_body,
                 self.__attachment_file
             )
-
-    def __generate_credentials(self, creds, token_path, cred_file_path):
-        if os.path.exists(token_path):
-            creds = Credentials.from_authorized_user_file(self.__token_path, self.__scopes)
-        if not creds or creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            else:
-                flow = InstalledAppFlow.from_client_secrets_file(cred_file_path, self.__scopes)
-                creds = flow.run_local_server(port=0)
-
-        self.__creds = creds
-
-        with open(token_path, "w") as token:
-            token.write(creds.to_json())
 
     def __call_gmail_api_with_attachments(self, email_body, attachment_file):
         """

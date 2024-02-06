@@ -40,6 +40,9 @@ class PathManipulation:
         """
         return self.__env_path
 
+    def get_secrets_path(self):
+        return self.__secrets_path
+
     def get_token_path(self):
         return os.path.join(self.__secrets_path, 'token.json')
 
