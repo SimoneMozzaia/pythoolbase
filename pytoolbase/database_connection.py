@@ -1,8 +1,9 @@
+import os.path
 import jaydebeapi as jdb
 import logging
 import pandas as pd
 from .configuration_file import Configuration
-from .path_manipulation import PathManipulation
+from .my_logger import CustomLogger
 
 
 class Database:
@@ -18,7 +19,7 @@ class Database:
 
     def __init__(self, path_manipulation_class):
         self.__config_class = Configuration()
-        self.__custom_logger = logging.getLogger(__name__)
+        self.__custom_logger = CustomLogger('DatabaseClass').custom_logger(logging.WARNING)
         self.__path_man_class = path_manipulation_class
 
     def connect_to_database(self, environment, country):
@@ -58,22 +59,28 @@ class Database:
 
 class Queries:
     __custom_logger = None
+    __path_class = None
 
-    def __init__(self):
-        self.__custom_logger = logging.getLogger(__name__)
+    def __init__(self, path_manipulation_class):
+        self.__config_class = Configuration()
+        self.__custom_logger = CustomLogger('QueriesClass').custom_logger(logging.WARNING)
+        self.__path_class = path_manipulation_class
 
-    def get_pandas_df_from_query(self, query_path, connection):
+    def get_pandas_df_from_query(self, query_file, connection):
         """Returns a pandas dataframe generated from an SQL query.
 
         Args:
-             query_path (str): Path to the query file
+             query_file (str): Name of the .sql file to be executed
              connection (connection):   Connection to the database
 
         Returns:
             A pandas dataframe
         """
-        with open(query_path) as f:
-            self.__custom_logger.debug(f"Get sql script from file {query_path}")
+        query_path = self.__path_class.get_queries_path()
+        query_to_execute = os.path.join(query_path, query_file)
+
+        with open(query_to_execute) as f:
+            self.__custom_logger.debug(f"Get sql script from file {query_to_execute}")
             sql = f.read()
             self.__custom_logger.debug(f"Query: {sql}")
 

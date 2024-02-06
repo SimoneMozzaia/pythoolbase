@@ -8,6 +8,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from email.message import EmailMessage
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from .my_logger import CustomLogger
+import logging
 
 
 class SendEmailWithGoogleMail:
@@ -20,8 +22,10 @@ class SendEmailWithGoogleMail:
     __config_class = None
     __email_body = None
     __attachment_file = None
+    __custom_logger = None
 
     def __init__(self, email_body, attachment_file, path_manipulation_class):
+        self.__custom_logger = CustomLogger('SendEmailWithGoogleMailClass').custom_logger(logging.WARNING)
         self.__path_class = path_manipulation_class
         self.__config_class = Configuration()
         self.__email_body = email_body

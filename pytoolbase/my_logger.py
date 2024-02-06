@@ -2,20 +2,31 @@ import logging
 import os
 from datetime import date
 
-'''Logger module hints
 
-In the main module call getLogger(__name__)
-Replace getLogger(__name__) in the auxiliary module by getLogger('__main__.' + __name__). 
-'''
-if not os.path.exists('logs\\'):
-    os.mkdir('logs\\')
+class CustomLogger(logging.Logger):
+    __class_name = None
 
-custom_logger = logging.getLogger(__name__)
-custom_logger.setLevel(logging.DEBUG)
+    def __init__(self, class_name):
+        if not os.path.exists('logs\\'):
+            os.mkdir('logs\\')
+        self.__class_name = class_name
+        super().__init__(class_name)
 
-custom_handler = logging.FileHandler(r"logs\\" + str(date.today()) + '_' + __name__, mode='w')
-custom_formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
+    def custom_logger(self, logging_level):
+        logger = logging.getLogger(self.__class_name)
+        logger.setLevel(logging_level)
+        # Create file handler
+        file_handler = logging.FileHandler(
+            filename=os.path.join('.\logs', str(date.today()) + '-' + self.__class_name),
+            mode='w'
+        )
+        file_handler.setLevel(logging.DEBUG)
 
-custom_handler.setFormatter(custom_formatter)
+        # Create formatter
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
-custom_logger.addHandler(custom_handler)
+        # Add handler and formatters to the logger
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+
+        return logger

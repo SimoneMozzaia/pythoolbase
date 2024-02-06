@@ -17,6 +17,7 @@ Just the clone repo and use the functions that interest you
 Clone the repository
 
 Copy the requirements.txt inside your python package folder
+Copy the folder "external_files" inside your python package folder
 
 Install the package and the requirements in your virtualenv with pip 
     pip install C:\custom_apps\programming_languages\repositories\pytoolbase

@@ -1,16 +1,18 @@
 from json import dumps
 from httplib2 import Http
 import logging
+from .my_logger import CustomLogger
 
 
 class GoogleWebhook:
     __instance = None
     __custom_logger = None
+    __custom_handler = None
     __webhook_section = None
     __app_message = None
 
     def __init__(self):
-        self.__custom_logger = logging.getLogger('__main__.' + __name__)
+        self.__custom_logger = CustomLogger('GoogleWebhookClass').custom_logger(logging.WARNING)
     
     def create_app_message_for_webhook(self, *args):
         self.__app_message = {"text": f"{args[0]}"}

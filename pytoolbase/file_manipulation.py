@@ -3,8 +3,8 @@ import csv
 from openpyxl.workbook import Workbook
 from openpyxl.styles import Font
 import os
-from .database_connection import Queries
 from shutil import copyfile
+from .my_logger import CustomLogger
 
 
 class CustomFile:
@@ -18,27 +18,23 @@ class CustomFile:
     __db_class = None
 
     def __init__(self):
-        self.__custom_logger = logging.getLogger(__name__)
-        self.__db_class = Queries()
+        self.__custom_logger = CustomLogger('CustomFileClass').custom_logger(logging.WARNING)
 
-    def create_csv_file_from_sql_query(self, connection, query_path, csv_file_path):
+    def create_csv_file_from_pandas_dataframe(self, pandas_dataframe, csv_file_path):
         """Creates a csv file from a specific sql query.
 
 
         Args:
-            connection (connection): Connection to the database
-            query_path (str):   Path to the file in which the queries to call are stored
+            pandas_dataframe (dataframe):   Pandas dataframe to be turned into a csv file
             csv_file_path (str):    Path of the csv file that has to be created
 
         Return:
             Nothing
         """
         self.__custom_logger.info("Create csv file")
-    
-        df = self.__db_class.get_pandas_df_from_query(query_path, connection)
-        self.__custom_logger.debug(f"Dataframe {df}.")
+        self.__custom_logger.debug(f"Dataframe {pandas_dataframe}.")
         
-        df.to_csv(
+        pandas_dataframe.to_csv(
             csv_file_path
             , encoding='utf-8'
             , header=True
@@ -48,9 +44,6 @@ class CustomFile:
             , decimal='.'
         )
         self.__custom_logger.debug(f"Created csv file {csv_file_path}.")
-
-        connection.close()
-        self.__custom_logger.debug(f"Closed database connection {connection}.")
 
     def create_excel_file_from_csv(self, csv_file_path, excel_file_path):
         self.__custom_logger.info("Create excel file")
