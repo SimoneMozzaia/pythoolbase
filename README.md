@@ -29,11 +29,18 @@ Example
 
 ```python
 from pytoolbase.database_connection import Database
+from pytoolbase.path_manipulation import PathManipulation
+
 def main():
-    db = Database()
+    pt = PathManipulation("env_path", "secrets_path", "queries_path")
+    db = Database(pt)
+    # ...
     connection = db.connect_to_database("env","country")
-    # Do something
+    # ...
     connection.close()
+    # ...
+
+main()
 ```
 
 ## Contributing

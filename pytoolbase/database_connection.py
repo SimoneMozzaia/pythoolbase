@@ -66,12 +66,13 @@ class Queries:
         self.__custom_logger = CustomLogger('QueriesClass').custom_logger(logging.WARNING)
         self.__path_class = path_manipulation_class
 
-    def get_pandas_df_from_query(self, query_file, connection):
+    def get_pandas_df_from_query(self, query_file, connection, parameters):
         """Returns a pandas dataframe generated from an SQL query.
 
         Args:
              query_file (str): Name of the .sql file to be executed
              connection (connection):   Connection to the database
+             parameters (dict): Dictionary contains sql query parameters. Can be None
 
         Returns:
             A pandas dataframe
@@ -86,4 +87,7 @@ class Queries:
 
         self.__custom_logger.debug("Created pandas dataframe")
 
-        return pd.read_sql(sql, connection)
+        if parameters is not None:
+            return pd.read_sql(sql, connection, params=parameters)
+        else:
+            return pd.read_sql(sql, connection)

@@ -11,8 +11,8 @@ class CustomCredentialsManager:
     __token_path = None
     __path_class = None
     __scopes = [
-        'https://www.googleapis.com/auth/gmail.compose'
-        ,'https://www.googleapis.com/auth/chat.bot'
+        'https://www.googleapis.com/auth/gmail.compose',
+        'https://www.googleapis.com/auth/chat.bot'
     ]
     __google_creds = None
 

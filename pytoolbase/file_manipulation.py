@@ -45,13 +45,13 @@ class CustomFile:
         )
         self.__custom_logger.debug(f"Created csv file {csv_file_path}.")
 
-    def create_excel_file_from_csv(self, csv_file_path, excel_file_path):
+    def create_excel_file_from_csv(self, csv_file_path, excel_file_path, encoding):
         self.__custom_logger.info("Create excel file")
 
         wb = Workbook()
         ws = wb.active
 
-        with open(csv_file_path) as f:
+        with open(csv_file_path, encoding=encoding) as f:
             reader = csv.reader(f, delimiter=',')
             for row in reader:
                 ws.append(row)
