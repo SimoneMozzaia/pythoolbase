@@ -34,8 +34,8 @@ class SendEmailWithGoogleMail:
                                         )
 
     def send_email(self, with_attachments):
-        self.__creds_class.generate_google_credentials()
-        self.__creds = self.__creds_class.get_google_credentials()
+        self.__creds_class.generate_google_user_credentials()
+        self.__creds = self.__creds_class.get_google_user_credentials()
 
         if with_attachments:
             self.__call_gmail_api_with_attachments(

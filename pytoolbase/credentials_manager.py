@@ -10,37 +10,46 @@ class CustomCredentialsManager:
     __custom_logger = None
     __token_path = None
     __path_class = None
-    __scopes = [
-        'https://www.googleapis.com/auth/gmail.compose',
+    __user_scopes = [
+        'https://www.googleapis.com/auth/gmail.compose'
+    ]
+    __service_account_scopes = [
         'https://www.googleapis.com/auth/chat.bot'
     ]
-    __google_creds = None
+    __google_user_creds = None
+    __user_cred_file_path = None
+    __service_acc_cred_file_path = None
 
     def __init__(self, path_manipulation_class):
         self.__custom_logger = CustomLogger('CustomCredentialsManager').custom_logger(logging.WARNING)
         self.__path_class = path_manipulation_class
         self.__token_path = self.__path_class.get_token_path()
-        self.__cred_file_path = self.__path_class.get_credentials_path()
+        self.__user_cred_file_path = self.__path_class.get_user_credentials_path()
+        self.__service_acc_cred_file_path = self.__path_class.get_service_account_credentials_path()
 
-    def get_scopes(self):
-        return self.__scopes
+    def get_user_scopes(self):
+        return self.__user_scopes
 
-    def get_google_credentials(self):
-        return self.__google_creds
+    def get_service_account_scopes(self):
+        return self.__service_account_scopes
 
-    def generate_google_credentials(self):
-        creds = self.__google_creds
+    def get_google_user_credentials(self):
+        return self.__google_user_creds
+
+    def generate_google_user_credentials(self):
+        creds = self.__google_user_creds
         if os.path.exists(self.__token_path):
-            creds = Credentials.from_authorized_user_file(self.__token_path, self.__scopes)
+            creds = Credentials.from_authorized_user_file(self.__token_path, self.__user_scopes)
+
         if not creds or creds:
             if creds and creds and creds.refresh_token:
                 creds.refresh(Request())
             else:
-                flow = InstalledAppFlow.from_client_secrets_file(self.__cred_file_path, self.__scopes)
+                flow = InstalledAppFlow.from_client_secrets_file(self.__user_cred_file_path, self.__user_scopes)
                 creds = flow.run_local_server(port=0)
 
-        self.__google_creds = creds
+        self.__google_user_creds = creds
 
-        with open(self.__token_path, "w") as token:
+        with open(self.__token_path, "w+") as token:
             token.write(creds.to_json())
 

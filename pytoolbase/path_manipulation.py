@@ -46,8 +46,11 @@ class PathManipulation:
     def get_token_path(self):
         return os.path.join(self.__secrets_path, 'token.json')
 
-    def get_credentials_path(self):
-        return os.path.join(self.__secrets_path, 'credentials.json')
+    def get_user_credentials_path(self):
+        return os.path.join(self.__secrets_path, 'oauth2_client_user_not_service.json')
+
+    def get_service_account_credentials_path(self):
+        return os.path.join(self.__secrets_path, 'service_account.json')
 
     def get_queries_path(self):
         return self.__query_path
