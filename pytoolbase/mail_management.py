@@ -18,32 +18,45 @@ class SendEmailWithGoogleMail:
     __gmail_env_file = None
     __path_class = None
     __config_class = None
+    __email_subject = None
     __email_body = None
     __attachment_file = None
+    __attachment_filename = None
     __custom_logger = None
 
-    def __init__(self, email_body, attachment_file, path_manipulation_class):
+    def __init__(self, email_subject, email_body, attachment_file, attachment_filename, path_manipulation_class):
         self.__custom_logger = CustomLogger('SendEmailWithGoogleMailClass').custom_logger(logging.WARNING)
         self.__path_class = path_manipulation_class
         self.__creds_class = CustomCredentialsManager(self.__path_class)
         self.__config_class = Configuration()
+        self.__email_subject = email_subject
         self.__email_body = email_body
         self.__attachment_file = attachment_file
+        self.__attachment_filename = attachment_filename
         self.__gmail_env_file = self.__config_class.get_value_from_env_file(
                                         os.path.join(self.__path_class.get_env_path(), '.gmail-env')
                                         )
 
-    def send_email(self, with_attachments):
+    def send_email(self, with_attachments, maintype=None, subtype=None):
+        """Method to send an email with the Google Mail API service.
+        If no type, subtype are provided then the next methods will
+        guess the MIME type themselves.
+
+        Args:
+            with_attachments:
+            maintype:
+            subtype:
+
+        Returns:
+
+        """
         self.__creds_class.generate_google_user_credentials()
         self.__creds = self.__creds_class.get_google_user_credentials()
 
         if with_attachments:
-            self.__call_gmail_api_with_attachments(
-                self.__email_body,
-                self.__attachment_file
-            )
+            self.__call_gmail_api_with_attachments(maintype, subtype)
 
-    def __call_gmail_api_with_attachments(self, email_body, attachment_file):
+    def __call_gmail_api_with_attachments(self, maintype, subtype):
         """
         For further info please refer to https://developers.google.com/gmail/api/guides/sending
         """
@@ -52,22 +65,28 @@ class SendEmailWithGoogleMail:
             mime_message = EmailMessage()
 
             # Message body
-            mime_message.set_content(email_body)
+            mime_message.set_content(self.__email_body)
 
             mime_message["To"] = self.__gmail_env_file['message_to']
             mime_message["From"] = self.__gmail_env_file['message_from']
-            mime_message["Subject"] = self.__gmail_env_file['message_subject']
+            mime_message["Subject"] = self.__email_subject
 
             # Manage attachments
-            attachment_filename = attachment_file
+            attachment_file = self.__attachment_file
+            attachment_filename = self.__attachment_filename
 
-            # guessing the MIME type
-            type_subtype, _ = mimetypes.guess_type(attachment_filename)
-            maintype, subtype = type_subtype.split("/")
+            # guessing the MIME type if no type, subtype are provided
+            if maintype is None or subtype is None:
+                type_subtype, _ = mimetypes.guess_type(attachment_file)
+                maintype, subtype = type_subtype.split("/")
+            else:
+                maintype = maintype
+                subtype = subtype
 
-            with open(attachment_filename, "rb") as fp:
+            with open(attachment_file, "rb") as fp:
                 attachment_data = fp.read()
-            mime_message.add_attachment(attachment_data, maintype, subtype)
+
+            mime_message.add_attachment(attachment_data, maintype, subtype, filename=attachment_filename)
 
             # Encode the message
             encoded_message = base64.urlsafe_b64encode(mime_message.as_bytes()).decode()
