@@ -102,10 +102,11 @@ class CustomFile:
         
         copyfile(local_path, remote_path)
 
-    def get_column_values_for_each_row(self, excel_file_path):
+    def get_column_values_for_each_row(self, excel_file_path, column_indexes):
         """
 
         Args:
+            column_indexes (list):  List of column indexes to consider in the selection
             excel_file_path (str):  Path to the Excel file to open
 
         Returns:
@@ -123,13 +124,7 @@ class CustomFile:
             value_list = []
             for cell in row:
                 if cell.row != 1:
-                    if cell.column == 2:
-                        value_list.append(cell.value.replace(' ', ''))
-                    if cell.column == 3:
-                        value_list.append(cell.value.replace(' ', ''))
-                    if cell.column == 4:
-                        value_list.append(cell.value.replace(' ', ''))
-                    if cell.column == 6:
+                    if cell.column in column_indexes:
                         value_list.append(cell.value.replace(' ', ''))
 
                 if len(value_list) != 0:
