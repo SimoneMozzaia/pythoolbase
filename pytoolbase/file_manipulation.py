@@ -2,6 +2,7 @@ import logging
 import csv
 from openpyxl.workbook import Workbook
 from openpyxl.styles import Font
+from openpyxl import load_workbook
 import os
 from shutil import copyfile
 from .my_logger import CustomLogger
@@ -18,7 +19,13 @@ class CustomFile:
     __db_class = None
 
     def __init__(self):
+        """At class initialization make sure that the working folder for temporary files
+        exists. If not, it creates it
+        """
         self.__custom_logger = CustomLogger('CustomFileClass').custom_logger(logging.WARNING)
+
+        if not os.path.exists(r'.\working_files'):
+            os.mkdir(r'.\working_files')
 
     def create_csv_file_from_pandas_dataframe(self, pandas_dataframe, csv_file_path):
         """Creates a csv file from a specific sql query.
@@ -94,3 +101,40 @@ class CustomFile:
         self.__custom_logger.info(f"copy_file_to_remote_folder")
         
         copyfile(local_path, remote_path)
+
+    def get_column_values_for_each_row(self, excel_file_path):
+        """
+
+        Args:
+            excel_file_path (str):  Path to the Excel file to open
+
+        Returns:
+            values_dict (dict): A dictionary containing relevant values
+                                retrieved from specific columns
+        """
+        self.__custom_logger.info("get_column_values_for_each_row")
+
+        workbook = load_workbook(excel_file_path)
+        sheet = workbook['Sheet']
+        values_dict = {}
+        i = 0
+
+        for row in sheet.iter_rows():
+            value_list = []
+            for cell in row:
+                if cell.row != 1:
+                    if cell.column == 2:
+                        value_list.append(cell.value.replace(' ', ''))
+                    if cell.column == 3:
+                        value_list.append(cell.value.replace(' ', ''))
+                    if cell.column == 4:
+                        value_list.append(cell.value.replace(' ', ''))
+                    if cell.column == 6:
+                        value_list.append(cell.value.replace(' ', ''))
+
+                if len(value_list) != 0:
+                    values_dict[i] = value_list
+
+            i += 1
+
+        return values_dict
