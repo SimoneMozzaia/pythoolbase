@@ -14,7 +14,8 @@ class Configuration:
     __custom_logger = None
         
     def __init__(self):
-        self.__custom_logger = CustomLogger('ConfigurationClass').custom_logger(logging.WARNING)
+        self.__custom_logger = CustomLogger('ConfigurationClass').custom_logger(logging.INFO)
+        self.__custom_logger.info(f'Initializing Configuration Class')
 
     def get_value_from_env_file(self, filepath):
         """Load the .env file to manage application secrets
@@ -22,7 +23,7 @@ class Configuration:
         Args:
             filepath(str)   Path to the .env file
         """
-        self.__custom_logger.info(f'get_value_from_env_file')
+        self.__custom_logger.info(f'get_value_from_env_file. Parameters: {filepath}')
 
         if os.path.exists(filepath):
             self.__custom_logger.debug(f'loading dotenv file {filepath}')
@@ -48,6 +49,7 @@ class Configuration:
             Exception   If the json file can't be opened or can't be found
             JSONDecodeError     If the file is not a JSON or can't be decoded as such
         """
+        self.__custom_logger.info(f'get_value_from_json. Parameters: {json_file}, {key}, {sub_key}')
         try:
             with open(json_file) as jf:
                 data = json.load(jf)

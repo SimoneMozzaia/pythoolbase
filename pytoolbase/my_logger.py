@@ -20,7 +20,7 @@ class CustomLogger(logging.Logger):
             filename=os.path.join('.\logs', str(date.today()) + '-' + self.__class_name),
             mode='w'
         )
-        file_handler.setLevel(logging.DEBUG)
+        file_handler.setLevel(logging_level)
 
         # Create formatter
         formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')

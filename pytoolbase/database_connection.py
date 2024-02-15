@@ -19,11 +19,13 @@ class Database:
 
     def __init__(self, path_manipulation_class):
         self.__config_class = Configuration()
-        self.__custom_logger = CustomLogger('DatabaseClass').custom_logger(logging.WARNING)
+        self.__custom_logger = CustomLogger('DatabaseClass').custom_logger(logging.INFO)
         self.__path_man_class = path_manipulation_class
+        self.__custom_logger.info(f'Initializing Database Class. Parameter: {path_manipulation_class}')
 
     def connect_to_database(self, environment, country):
-        self.__custom_logger.info(f"Application entered in module {__name__}.")
+        self.__custom_logger.info(f"connect_to_database. Parameters: {environment}, {country}")
+
         jar_path = r'.\external_files\jt400-11.1.jar'
 
         country_env_path = self.__path_man_class.get_country_env_file(
@@ -63,8 +65,9 @@ class Queries:
 
     def __init__(self, path_manipulation_class):
         self.__config_class = Configuration()
-        self.__custom_logger = CustomLogger('QueriesClass').custom_logger(logging.WARNING)
+        self.__custom_logger = CustomLogger('QueriesClass').custom_logger(logging.INFO)
         self.__path_class = path_manipulation_class
+        self.__custom_logger.info(f'Initializing Queries Class')
 
     def get_pandas_df_from_query(self, query_file, connection, parameters):
         """Returns a pandas dataframe generated from an SQL query.
@@ -77,6 +80,8 @@ class Queries:
         Returns:
             A pandas dataframe
         """
+        self.__custom_logger.info(f'get_pandas_df_from_query. Parameters: {query_file}, {connection}, {parameters}')
+
         query_path = self.__path_class.get_queries_path()
         query_to_execute = os.path.join(query_path, query_file)
 

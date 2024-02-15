@@ -26,17 +26,23 @@ class CustomCredentialsManager:
         self.__token_path = self.__path_class.get_token_path()
         self.__user_cred_file_path = self.__path_class.get_user_credentials_path()
         self.__service_acc_cred_file_path = self.__path_class.get_service_account_credentials_path()
+        self.__custom_logger.info(f'Initializing CustomCredentialsManager Class. Parameter: {path_manipulation_class}')
 
     def get_user_scopes(self):
+        self.__custom_logger.info(f'get_user_scopes')
         return self.__user_scopes
 
     def get_service_account_scopes(self):
+        self.__custom_logger.info(f'get_service_account_scopes')
         return self.__service_account_scopes
 
     def get_google_user_credentials(self):
+        self.__custom_logger.info(f'get_google_user_credentials')
         return self.__google_user_creds
 
     def generate_google_user_credentials(self):
+        self.__custom_logger.info(f'generate_google_user_credentials')
+
         creds = self.__google_user_creds
         if os.path.exists(self.__token_path):
             creds = Credentials.from_authorized_user_file(self.__token_path, self.__user_scopes)

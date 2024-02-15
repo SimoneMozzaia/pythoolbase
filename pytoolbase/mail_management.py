@@ -25,7 +25,11 @@ class SendEmailWithGoogleMail:
     __custom_logger = None
 
     def __init__(self, email_subject, email_body, attachment_file, attachment_filename, path_manipulation_class):
-        self.__custom_logger = CustomLogger('SendEmailWithGoogleMailClass').custom_logger(logging.WARNING)
+        self.__custom_logger = CustomLogger('SendEmailWithGoogleMailClass').custom_logger(logging.INFO)
+        self.__custom_logger.info(f'Initializing SendEmailWithGoogleMail Class. Parameters: '
+                                  f'{email_subject}, {email_body}, {attachment_file}, {attachment_filename},'
+                                  f'{path_manipulation_class}'
+                                  )
         self.__path_class = path_manipulation_class
         self.__creds_class = CustomCredentialsManager(self.__path_class)
         self.__config_class = Configuration()
@@ -50,6 +54,7 @@ class SendEmailWithGoogleMail:
         Returns:
 
         """
+        self.__custom_logger.info(f'send_email. Parameters: {with_attachments}, {maintype}, {subtype}')
         self.__creds_class.generate_google_user_credentials()
         self.__creds = self.__creds_class.get_google_user_credentials()
 
@@ -60,6 +65,7 @@ class SendEmailWithGoogleMail:
         """
         For further info please refer to https://developers.google.com/gmail/api/guides/sending
         """
+        self.__custom_logger.info(f'__call_gmail_api_with_attachments. Parameters: {maintype}, {subtype}')
         try:
             service = build('gmail', 'v1', credentials=self.__creds)
             mime_message = EmailMessage()

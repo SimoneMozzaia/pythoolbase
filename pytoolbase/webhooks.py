@@ -12,16 +12,19 @@ class GoogleWebhook:
     def __init__(self, hook_url):
         self.__custom_logger = CustomLogger('GoogleWebhookClass').custom_logger(logging.WARNING)
         self.__hook_url = hook_url
+        self.__custom_logger.info('Initializing GoogleWebhook class')
 
     def send_message_to_google_space(self, *args):
+        self.__custom_logger.info('send_message_to_google_space')
         self.__create_app_message_for_webhook(*args)
         self.__trigger_google_webhook()
     
     def __create_app_message_for_webhook(self, *args):
+        self.__custom_logger.info('__create_app_message_for_webhook')
         self.__app_message = {"text": f"{args[0]}"}
     
     def __trigger_google_webhook(self):
-        self.__custom_logger.info(f"Sending info to google space")
+        self.__custom_logger.info(f"__trigger_google_webhook")
         
         app_message = self.__app_message        
         message_headers = {"Content-Type": "application/json; charset=UTF-8"}

@@ -22,7 +22,8 @@ class CustomFile:
         """At class initialization make sure that the working folder for temporary files
         exists. If not, it creates it
         """
-        self.__custom_logger = CustomLogger('CustomFileClass').custom_logger(logging.WARNING)
+        self.__custom_logger = CustomLogger('CustomFileClass').custom_logger(logging.INFO)
+        self.__custom_logger.info(f'Initializing CustomFile Clas')
 
         if not os.path.exists(r'.\working_files'):
             os.mkdir(r'.\working_files')
@@ -38,7 +39,7 @@ class CustomFile:
         Return:
             Nothing
         """
-        self.__custom_logger.info("Create csv file")
+        self.__custom_logger.info(f"create_csv_file_from_pandas_dataframe. Parameters: {csv_file_path}")
         self.__custom_logger.debug(f"Dataframe {pandas_dataframe}.")
         
         pandas_dataframe.to_csv(
@@ -53,7 +54,8 @@ class CustomFile:
         self.__custom_logger.debug(f"Created csv file {csv_file_path}.")
 
     def create_excel_file_from_csv(self, csv_file_path, excel_file_path, encoding):
-        self.__custom_logger.info("Create excel file")
+        self.__custom_logger.info(f"create_excel_file_from_csv. Parameters: {csv_file_path}, {excel_file_path}"
+                                  f", {encoding}")
 
         wb = Workbook()
         ws = wb.active
@@ -89,7 +91,7 @@ class CustomFile:
         self.__custom_logger.debug(f"Saving excel file at {excel_file_path}")
         wb.save(excel_file_path)
 
-        self.__custom_logger.info(f"Operations completed. Closing app.")
+        self.__custom_logger.info(f"Excel file created.")
 
     def copy_file_to_remote_folder(self, local_path, remote_path):
         """Use the copyfile utility to upload a local file to a remote folder
@@ -98,7 +100,7 @@ class CustomFile:
             local_path  Path to the local file to be uploaded
             remote_path Path where to copy the local file
         """
-        self.__custom_logger.info(f"copy_file_to_remote_folder")
+        self.__custom_logger.info(f"copy_file_to_remote_folder. Parameters: {local_path}, {remote_path}")
         
         copyfile(local_path, remote_path)
 
@@ -113,7 +115,7 @@ class CustomFile:
             values_dict (dict): A dictionary containing relevant values
                                 retrieved from specific columns
         """
-        self.__custom_logger.info("get_column_values_for_each_row")
+        self.__custom_logger.info(f"get_column_values_for_each_row. Parameters: {excel_file_path}, {column_indexes}")
 
         workbook = load_workbook(excel_file_path)
         sheet = workbook['Sheet']
