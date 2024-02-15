@@ -80,13 +80,13 @@ class Queries:
         Returns:
             A pandas dataframe
         """
-        self.__custom_logger.info(f'get_pandas_df_from_query. Parameters: {query_file}, {connection}, {parameters}')
+        self.__custom_logger.info(f'get_pandas_df_from_query')
 
         query_path = self.__path_class.get_queries_path()
         query_to_execute = os.path.join(query_path, query_file)
 
         with open(query_to_execute) as f:
-            self.__custom_logger.debug(f"Get sql script from file {query_to_execute}")
+            self.__custom_logger.debug(f"Get sql script from file {query_to_execute} with parameters {parameters}")
             sql = f.read()
             self.__custom_logger.debug(f"Query: {sql}")
 
