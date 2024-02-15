@@ -129,8 +129,8 @@ class CustomFile:
                     if cell.column in column_indexes:
                         value_list.append(cell.value.replace(' ', ''))
 
-                if len(value_list) != 0:
-                    values_dict[i] = value_list
+            if len(value_list) != 0:
+                values_dict[i] = value_list
 
             i += 1
 

@@ -80,7 +80,7 @@ class Queries:
         Returns:
             A pandas dataframe
         """
-        self.__custom_logger.info(f'get_pandas_df_from_query')
+        self.__custom_logger.info(f'get_pandas_df_from_query. Parameters {query_file}, {connection}, {parameters}')
 
         query_path = self.__path_class.get_queries_path()
         query_to_execute = os.path.join(query_path, query_file)
