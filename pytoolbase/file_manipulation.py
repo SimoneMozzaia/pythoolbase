@@ -23,7 +23,7 @@ class CustomFile:
         exists. If not, it creates it
         """
         self.__custom_logger = CustomLogger('CustomFileClass').custom_logger(logging.INFO)
-        self.__custom_logger.info(f'Initializing CustomFile Clas')
+        self.__custom_logger.info(f'Initializing CustomFile Class')
 
         if not os.path.exists(r'.\working_files'):
             os.mkdir(r'.\working_files')

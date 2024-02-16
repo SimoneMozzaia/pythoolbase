@@ -28,7 +28,8 @@ class EncryptAndDecryptData:
 
     def __init__(self):
         """At class instantiation two new public and private keys are generated"""
-        self.__custom_logger = CustomLogger('EncryptAndDecryptDataClass').custom_logger(logging.WARNING)
+        self.__custom_logger = CustomLogger('EncryptAndDecryptData').custom_logger(logging.INFO)
+        self.__custom_logger.info(f'Initializing EncryptAndDecryptData Class')
         self.__config_class = Configuration()
         (self.__public_key, self.__private_key) = rsa.newkeys(1024, poolsize=8)
         

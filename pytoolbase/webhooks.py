@@ -10,9 +10,9 @@ class GoogleWebhook:
     __hook_url = None
 
     def __init__(self, hook_url):
-        self.__custom_logger = CustomLogger('GoogleWebhookClass').custom_logger(logging.WARNING)
+        self.__custom_logger = CustomLogger('GoogleWebhook').custom_logger(logging.INFO)
+        self.__custom_logger.info(f'Initializing GoogleWebhook Class')
         self.__hook_url = hook_url
-        self.__custom_logger.info('Initializing GoogleWebhook class')
 
     def send_message_to_google_space(self, *args):
         self.__custom_logger.info('send_message_to_google_space')
