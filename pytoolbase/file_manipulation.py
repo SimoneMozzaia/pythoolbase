@@ -6,6 +6,7 @@ from openpyxl import load_workbook
 import os
 from shutil import copyfile
 from .my_logger import CustomLogger
+import xlwings as xw
 
 
 class CustomFile:
@@ -135,3 +136,26 @@ class CustomFile:
             i += 1
 
         return values_dict
+
+    def save_calculated_cell_value(self, excel_file_to_update, sheet_name, rows):
+        """
+        Given a specific cell value calculated with a formula,
+        saves the value itself without the calculations.
+
+        During the process the initial formula is lost
+        """
+        self.__custom_logger.info(f"save_calculated_cell_value. Parameters: {excel_file_to_update}, "
+                                  f"{sheet_name}, {rows}")
+
+        # Save cell values without formula
+        app = xw.App(visible=False, add_book=False)
+        wb = xw.Book(excel_file_to_update)
+        ws = wb.sheets(sheet_name)
+
+        for row_num in range(1, rows + 1):
+            result = ws[f'P{row_num}'].value
+            ws[f'P{row_num}'].value = result
+
+        wb.save(excel_file_to_update)
+        wb.close()
+        app.quit()
