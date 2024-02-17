@@ -147,14 +147,16 @@ class CustomFile:
         self.__custom_logger.info(f"save_calculated_cell_value. Parameters: {excel_file_to_update}, "
                                   f"{sheet_name}, {rows}")
 
+        cell_letter = 'P'
+
         # Save cell values without formula
         app = xw.App(visible=False, add_book=False)
         wb = xw.Book(excel_file_to_update)
         ws = wb.sheets(sheet_name)
 
         for row_num in range(1, rows + 1):
-            result = ws[f'P{row_num}'].value
-            ws[f'P{row_num}'].value = result
+            result = ws[f'{cell_letter}{row_num}'].value
+            ws[f'{cell_letter}{row_num}'].value = result
 
         wb.save(excel_file_to_update)
         wb.close()
