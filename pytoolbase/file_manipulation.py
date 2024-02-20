@@ -7,6 +7,7 @@ import os
 from shutil import copyfile
 from .my_logger import CustomLogger
 import xlwings as xw
+from .configuration_file import Configuration
 
 
 class CustomFile:
@@ -18,6 +19,7 @@ class CustomFile:
     """
     __custom_logger = None
     __db_class = None
+    __cfg_class = None
 
     def __init__(self):
         """At class initialization make sure that the working folder for temporary files
@@ -161,3 +163,18 @@ class CustomFile:
         wb.save(excel_file_to_update)
         wb.close()
         app.quit()
+
+    def get_list_from_env_file(self, environment_file_path, key_to_extract):
+        self.__custom_logger.info(f"get_list_from_env_file. Parameters: {environment_file_path}, "
+                                  f"{key_to_extract}")
+        self.__cfg_class = Configuration()
+
+        env_file = self.__cfg_class.get_value_from_env_file(environment_file_path)
+        values = env_file[key_to_extract]
+        list_of_values = list(values)
+
+        for val in list_of_values:
+            if val == ',':
+                list_of_values.remove(val)
+
+        return list_of_values
