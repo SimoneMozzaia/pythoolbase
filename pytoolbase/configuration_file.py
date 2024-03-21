@@ -1,7 +1,7 @@
 import logging
 import json
 import os.path
-from dotenv import dotenv_values
+from dotenv import dotenv_values, set_key, load_dotenv
 from .my_logger import CustomLogger
 
 
@@ -12,6 +12,7 @@ class Configuration:
         custom_logger   Instance of the custom logger class. Used for logging purposes
     """
     __custom_logger = None
+    __env_file_path = None
         
     def __init__(self):
         self.__custom_logger = CustomLogger('ConfigurationClass').custom_logger(logging.INFO)
@@ -27,10 +28,17 @@ class Configuration:
 
         if os.path.exists(filepath):
             self.__custom_logger.debug(f'loading dotenv file {filepath}')
+            self.__env_file_path = filepath
             return dotenv_values(filepath)
 
         self.__custom_logger.critical(f'Cannot load {filepath} file')
         return None
+
+    def set_env_file_key(self, key_to_set, key_value):
+        load_dotenv(self.__env_file_path)
+        os.environ[key_to_set] = key_value
+        # Write changes to .env file.
+        set_key(self.__env_file_path, key_to_set, os.environ[key_to_set])
         
     def get_value_from_json(self, json_file, key, sub_key):
         """Return the value of the specified key; sub_key pair from a json file.
