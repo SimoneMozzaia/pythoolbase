@@ -96,3 +96,13 @@ class Queries:
             return pd.read_sql(sql, connection, params=parameters)
         else:
             return pd.read_sql(sql, connection)
+
+    def execute_insert(self, connection, query, params=None):
+        self.__custom_logger.info(f'execute_insert. Parameters {query}, {connection}, {params}')
+        cursor = connection.cursor()
+        if params is not None:
+            cursor.execute(query, params)
+        else:
+            cursor.execute(query)
+        cursor.close()
+
