@@ -21,11 +21,10 @@ class PathManipulation:
     __general_env_filename = '.env'
 
     def __init__(self, env_path, secrets_path, query_path):
-        self.__custom_logger = CustomLogger('PathManipulation').custom_logger(logging.INFO)
-        self.__custom_logger.info(f'Initializing PathManipulation Class. Parameters: {env_path}, '
-                                  f'{secrets_path}, '
-                                  f'{query_path}'
-                                  )
+        self.__custom_logger = CustomLogger('PathManipulation').custom_logger(logging.DEBUG)
+        self.__custom_logger.info(
+            f'Initializing PathManipulation Class. Parameters: {env_path}, {secrets_path}, {query_path}'
+        )
         self.__env_path = env_path
         self.__secrets_path = secrets_path
         self.__query_path = query_path

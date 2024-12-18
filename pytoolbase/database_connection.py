@@ -19,18 +19,20 @@ class Database:
 
     def __init__(self, path_manipulation_class):
         self.__config_class = Configuration()
-        self.__custom_logger = CustomLogger('DatabaseClass').custom_logger(logging.INFO)
+        self.__custom_logger = CustomLogger('DatabaseClass').custom_logger(logging.DEBUG)
         self.__path_man_class = path_manipulation_class
         self.__custom_logger.info(f'Initializing Database Class. Parameter: {path_manipulation_class}')
 
     def connect_to_database(self, environment, country):
         self.__custom_logger.info(f"connect_to_database. Parameters: {environment}, {country}")
 
+        #TODO Take the value from .env file instead of hardcoding it
         jar_path = r'.\external_files\jt400-11.1.jar'
 
         country_env_path = self.__path_man_class.get_country_env_file(
-                                            environment=environment,
-                                            country=country)
+            environment=environment,
+            country=country
+        )
         country_env_secrets = self.__config_class.get_value_from_env_file(country_env_path)
         general_env_path = self.__path_man_class.get_general_env_file()
         general_env_secrets = self.__config_class.get_value_from_env_file(general_env_path)
@@ -65,7 +67,7 @@ class Queries:
 
     def __init__(self, path_manipulation_class):
         self.__config_class = Configuration()
-        self.__custom_logger = CustomLogger('QueriesClass').custom_logger(logging.INFO)
+        self.__custom_logger = CustomLogger('QueriesClass').custom_logger(logging.DEBUG)
         self.__path_class = path_manipulation_class
         self.__custom_logger.info(f'Initializing Queries Class')
 
@@ -100,9 +102,11 @@ class Queries:
     def execute_insert(self, connection, query, params=None):
         self.__custom_logger.info(f'execute_insert. Parameters {query}, {connection}, {params}')
         cursor = connection.cursor()
+
         if params is not None:
             cursor.execute(query, params)
         else:
             cursor.execute(query)
+
         cursor.close()
 

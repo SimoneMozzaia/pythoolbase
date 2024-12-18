@@ -8,6 +8,7 @@ from shutil import copyfile
 from .my_logger import CustomLogger
 import xlwings as xw
 from .configuration_file import Configuration
+import formulas
 
 
 class CustomFile:
@@ -25,7 +26,7 @@ class CustomFile:
         """At class initialization make sure that the working folder for temporary files
         exists. If not, it creates it
         """
-        self.__custom_logger = CustomLogger('CustomFileClass').custom_logger(logging.INFO)
+        self.__custom_logger = CustomLogger('CustomFileClass').custom_logger(logging.DEBUG)
         self.__custom_logger.info(f'Initializing CustomFile Class')
 
         if not os.path.exists(r'.\working_files'):
@@ -57,8 +58,9 @@ class CustomFile:
         self.__custom_logger.debug(f"Created csv file {csv_file_path}.")
 
     def create_excel_file_from_csv(self, csv_file_path, excel_file_path, encoding):
-        self.__custom_logger.info(f"create_excel_file_from_csv. Parameters: {csv_file_path}, {excel_file_path}"
-                                  f", {encoding}")
+        self.__custom_logger.info(
+            f"create_excel_file_from_csv. Parameters: {csv_file_path}, {excel_file_path}, {encoding}"
+        )
 
         wb = Workbook()
         ws = wb.active
@@ -88,10 +90,10 @@ class CustomFile:
                         if cell.row > 1:
                             ws[cell.coordinate].number_format = '@'
 
-        self.__custom_logger.debug("Delete the csv file")
+        self.__custom_logger.info("Deleting the csv file")
         os.remove(csv_file_path)
 
-        self.__custom_logger.debug(f"Saving excel file at {excel_file_path}")
+        self.__custom_logger.info(f"Saving the excel file at {excel_file_path}")
         wb.save(excel_file_path)
 
         self.__custom_logger.info(f"Excel file created.")
@@ -139,34 +141,28 @@ class CustomFile:
 
         return values_dict
 
-    def save_calculated_cell_value(self, excel_file_to_update, sheet_name, rows):
+    def save_calculated_cell_value(self, excel_file_to_update):
         """
         Given a specific cell value calculated with a formula,
         saves the value itself without the calculations.
 
         During the process the initial formula is lost
         """
-        self.__custom_logger.info(f"save_calculated_cell_value. Parameters: {excel_file_to_update}, "
-                                  f"{sheet_name}, {rows}")
+        self.__custom_logger.info(
+            f"save_calculated_cell_value. Parameters: {excel_file_to_update}"
+        )
 
-        cell_letter = 'P'
+        # Save calculated results
+        self.__custom_logger.info(f'Saving calculated results')
+        xl_model = formulas.ExcelModel().loads(excel_file_to_update).finish()
+        xl_model.calculate()
+        xl_model.write(dirpath=r'.\external_files')
 
-        # Save cell values without formula
-        app = xw.App(visible=False, add_book=False)
-        wb = xw.Book(excel_file_to_update)
-        ws = wb.sheets(sheet_name)
-
-        for row_num in range(1, rows + 1):
-            result = ws[f'{cell_letter}{row_num}'].value
-            ws[f'{cell_letter}{row_num}'].value = result
-
-        wb.save(excel_file_to_update)
-        wb.close()
-        app.quit()
 
     def get_list_from_env_file(self, environment_file_path, key_to_extract):
-        self.__custom_logger.info(f"get_list_from_env_file. Parameters: {environment_file_path}, "
-                                  f"{key_to_extract}")
+        self.__custom_logger.info(
+            f"get_list_from_env_file. Parameters: {environment_file_path}, {key_to_extract}"
+        )
         self.__cfg_class = Configuration()
 
         env_file = self.__cfg_class.get_value_from_env_file(environment_file_path)

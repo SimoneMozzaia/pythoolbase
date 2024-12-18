@@ -15,7 +15,7 @@ class Configuration:
     __env_file_path = None
         
     def __init__(self):
-        self.__custom_logger = CustomLogger('ConfigurationClass').custom_logger(logging.INFO)
+        self.__custom_logger = CustomLogger('ConfigurationClass').custom_logger(logging.DEBUG)
         self.__custom_logger.info(f'Initializing Configuration Class')
 
     def get_value_from_env_file(self, filepath):
@@ -27,16 +27,19 @@ class Configuration:
         self.__custom_logger.info(f'get_value_from_env_file. Parameters: {filepath}')
 
         if os.path.exists(filepath):
-            self.__custom_logger.debug(f'loading dotenv file {filepath}')
+            self.__custom_logger.debug(f'loading dotenv file')
             self.__env_file_path = filepath
             return dotenv_values(filepath)
 
-        self.__custom_logger.critical(f'Cannot load {filepath} file')
+        self.__custom_logger.critical(f'Cannot load the file')
         return None
 
     def set_env_file_key(self, key_to_set, key_value):
+        self.__custom_logger.info(f'set_env_file_key. Parameters: {key_to_set}, {key_value}')
+
         load_dotenv(self.__env_file_path)
         os.environ[key_to_set] = key_value
+
         # Write changes to .env file.
         set_key(self.__env_file_path, key_to_set, os.environ[key_to_set])
         

@@ -21,7 +21,7 @@ class CustomCredentialsManager:
     __service_acc_cred_file_path = None
 
     def __init__(self, path_manipulation_class):
-        self.__custom_logger = CustomLogger('CustomCredentialsManager').custom_logger(logging.WARNING)
+        self.__custom_logger = CustomLogger('CustomCredentialsManager').custom_logger(logging.DEBUG)
         self.__path_class = path_manipulation_class
         self.__token_path = self.__path_class.get_token_path()
         self.__user_cred_file_path = self.__path_class.get_user_credentials_path()

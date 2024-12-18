@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name="pytoolbase",
-      version="0.1",
+      version="0.2",
       description="Python Utilities",
       author="Simone Mozzaia",
       author_email='info@simonemozzaia.it"',
