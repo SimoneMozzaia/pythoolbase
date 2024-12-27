@@ -1,4 +1,3 @@
-import logging
 import json
 import os.path
 from dotenv import dotenv_values, set_key, load_dotenv
@@ -14,8 +13,8 @@ class Configuration:
     __custom_logger = None
     __env_file_path = None
         
-    def __init__(self):
-        self.__custom_logger = CustomLogger('ConfigurationClass').custom_logger(logging.DEBUG)
+    def __init__(self, log_level):
+        self.__custom_logger = CustomLogger('ConfigurationClass').custom_logger(log_level)
         self.__custom_logger.info(f'Initializing Configuration Class')
 
     def get_value_from_env_file(self, filepath):

@@ -9,8 +9,8 @@ class GoogleWebhook:
     __app_message = None
     __hook_url = None
 
-    def __init__(self, hook_url):
-        self.__custom_logger = CustomLogger('GoogleWebhook').custom_logger(logging.DEBUG)
+    def __init__(self, hook_url, log_level):
+        self.__custom_logger = CustomLogger('GoogleWebhook').custom_logger(log_level)
         self.__custom_logger.info(f'Initializing GoogleWebhook Class')
         self.__hook_url = hook_url
 
@@ -44,8 +44,8 @@ class MicrosoftTeamsWebhook:
     __app_message = None
     __hook_url = None
 
-    def __init__(self, hook_url):
-        self.__custom_logger = CustomLogger('MicrosoftTeamsWebhook').custom_logger(logging.DEBUG)
+    def __init__(self, hook_url, log_level):
+        self.__custom_logger = CustomLogger('MicrosoftTeamsWebhook').custom_logger(log_level)
         self.__custom_logger.info(f'Initializing MicrosoftTeamsWebhook Class')
         self.__hook_url = hook_url
 

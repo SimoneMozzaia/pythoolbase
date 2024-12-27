@@ -26,9 +26,9 @@ class EncryptAndDecryptData:
             cls.__instance = super(EncryptAndDecryptData, cls).__call__(*args, **kwargs)
         return cls.__instance
 
-    def __init__(self):
+    def __init__(self, log_level):
         """At class instantiation two new public and private keys are generated"""
-        self.__custom_logger = CustomLogger('EncryptAndDecryptData').custom_logger(logging.INFO)
+        self.__custom_logger = CustomLogger('EncryptAndDecryptData').custom_logger(log_level)
         self.__custom_logger.info(f'Initializing EncryptAndDecryptData Class')
         self.__config_class = Configuration()
         (self.__public_key, self.__private_key) = rsa.newkeys(1024, poolsize=8)

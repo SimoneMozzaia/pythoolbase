@@ -22,12 +22,13 @@ class CustomFile:
     __db_class = None
     __cfg_class = None
 
-    def __init__(self):
+    def __init__(self, configuration_class, log_level):
         """At class initialization make sure that the working folder for temporary files
         exists. If not, it creates it
         """
-        self.__custom_logger = CustomLogger('CustomFileClass').custom_logger(logging.DEBUG)
-        self.__custom_logger.info(f'Initializing CustomFile Class')
+        self.__cfg_class = configuration_class
+        self.__custom_logger = CustomLogger('CustomFileClass').custom_logger(log_level)
+        self.__custom_logger.info(f'Initializing CustomFile Class. Parameter: {log_level}')
 
         if not os.path.exists(r'.\working_files'):
             os.mkdir(r'.\working_files')
@@ -158,12 +159,10 @@ class CustomFile:
         xl_model.calculate()
         xl_model.write(dirpath=r'.\external_files')
 
-
     def get_list_from_env_file(self, environment_file_path, key_to_extract):
         self.__custom_logger.info(
             f"get_list_from_env_file. Parameters: {environment_file_path}, {key_to_extract}"
         )
-        self.__cfg_class = Configuration()
 
         env_file = self.__cfg_class.get_value_from_env_file(environment_file_path)
         values = env_file[key_to_extract]
