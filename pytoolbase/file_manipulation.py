@@ -1,14 +1,15 @@
 import logging
 import csv
+from datetime import datetime, timedelta
 from openpyxl.workbook import Workbook
 from openpyxl.styles import Font
 from openpyxl import load_workbook
 import os
 from shutil import copyfile
 from .my_logger import CustomLogger
-import xlwings as xw
-from .configuration_file import Configuration
 import formulas
+import sys
+import glob
 
 
 class CustomFile:
@@ -22,13 +23,15 @@ class CustomFile:
     __db_class = None
     __cfg_class = None
 
-    def __init__(self, configuration_class, log_level):
+    def __init__(self, configuration_class):
         """At class initialization make sure that the working folder for temporary files
         exists. If not, it creates it
         """
         self.__cfg_class = configuration_class
-        self.__custom_logger = CustomLogger('CustomFileClass').custom_logger(log_level)
-        self.__custom_logger.info(f'Initializing CustomFile Class. Parameter: {log_level}')
+        self.__custom_logger = CustomLogger('CustomFileClass').custom_logger(
+            self.__cfg_class.get_log_level_from_log_key("custom_file_log_level")
+        )
+        self.__custom_logger.info(f'Initializing CustomFile Class')
 
         if not os.path.exists(r'.\working_files'):
             os.mkdir(r'.\working_files')
@@ -164,7 +167,7 @@ class CustomFile:
             f"get_list_from_env_file. Parameters: {environment_file_path}, {key_to_extract}"
         )
 
-        env_file = self.__cfg_class.get_value_from_env_file(environment_file_path)
+        env_file = self.__cfg_class.load_env_file(environment_file_path)
         values = env_file[key_to_extract]
         list_of_values = list(values)
 
@@ -173,3 +176,83 @@ class CustomFile:
                 list_of_values.remove(val)
 
         return list_of_values
+
+
+class FilesAndFoldersManipulations:
+    __custom_file_class = None
+    __config_class = None
+    __custom_logger = None
+    __check_folders = False
+
+    def __init__(self, configuration_class, custom_file):
+        self.__custom_file_class = custom_file
+        self.__config_class = configuration_class
+        self.__custom_logger = CustomLogger('FilesAndFoldersManipulations').custom_logger(
+            self.__config_class.get_log_level_from_log_key("files_and_folders_log_level")
+        )
+        self.__custom_logger.info(f'Initializing FilesAndFoldersManipulations Class')
+
+    def mount_disk(self, network_drive_letter, network_path, username, password):
+        self.__custom_logger.info(f'mount_disk')
+
+        os.system(f"net use {network_drive_letter}: {network_path} /user:{username} {password} /persistent:no")
+
+        self.__custom_logger.info(f'Checking if {network_drive_letter} disk has been mounted.')
+
+        network_pt = f'{network_drive_letter}'.strip()
+
+        if os.path.exists(network_pt):
+            self.__custom_logger.critical(f'ERROR. Disk {network_drive_letter} could not be mounted. Ending program')
+            sys.exit(99)
+
+        self.__custom_logger.info(f'{network_drive_letter} disk is present and ready to be used.')
+
+    def unmount_disk(self, network_drive_letter):
+        self.__custom_logger.info(f'unmount_disk')
+        os.system(f"net use {network_drive_letter}: /delete /yes")
+
+        self.__custom_logger.info(f'Checking if {network_drive_letter} disk has been unmounted.')
+
+        if not os.path.exists(network_drive_letter):
+            self.__custom_logger.info(f'Disk {network_drive_letter} has been removed')
+
+    def ending_program(self):
+        self.__custom_logger.info(f'All operations completed. Ending program.')
+
+    def check_folders(self, general_env_file_path):
+        self.__custom_logger.info(f'check_folders. Parameters: {general_env_file_path}')
+
+        general_env_secrets = self.__config_class.get_value_from_env_file(general_env_file_path)
+        backup_folder = general_env_secrets["backup_folder"]
+
+        self.__custom_logger.info(f'Checking if {backup_folder} exists.')
+        if not os.path.exists(backup_folder):
+            os.mkdir(backup_folder)
+
+        self.__check_folders = True
+
+    def copy_files_in_folders(self, local_excel_path, remote_file_path, general_env_file_path):
+        self.__custom_logger.info(
+            f'copy_files_in_folders. Parameters: {local_excel_path}, {remote_file_path}, {general_env_file_path}'
+        )
+
+        if not self.__check_folders:
+            self.check_folders(general_env_file_path)
+
+        self.__custom_file_class.copy_file_to_remote_folder(local_excel_path, remote_file_path)
+
+    def delete_logs(self):
+        self.__custom_logger.info(f'delete_logs')
+        yesterday = (datetime.now() + timedelta(days=-1)).strftime("%Y-%m-%d")
+
+        for fl in glob.glob(f'./logs/{yesterday}-*'):
+            self.__custom_logger.info(f'Deleting file {fl}')
+            os.remove(fl)
+
+    def delete_working_files(self):
+        self.__custom_logger.info(f'delete_working_files')
+
+        for fl in glob.glob('./external_files/*.xlsx'):
+            self.__custom_logger.info(f'Deleting file {fl}')
+            os.remove(fl)
+

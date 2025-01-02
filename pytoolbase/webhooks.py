@@ -1,6 +1,5 @@
 from json import dumps
 from httplib2 import Http
-import logging
 from .my_logger import CustomLogger
 
 

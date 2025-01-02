@@ -1,12 +1,10 @@
 import base64
 import mimetypes
 import os
-from .configuration_file import Configuration
 from email.message import EmailMessage
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from .my_logger import CustomLogger
-import logging
 from .credentials_manager import CustomCredentialsManager
 
 
@@ -16,7 +14,6 @@ class SendEmailWithGoogleMail:
     __token_path = None
     __cred_file_path = None
     __gmail_env_file = None
-    __path_class = None
     __config_class = None
     __email_subject = None
     __email_body = None
@@ -24,22 +21,25 @@ class SendEmailWithGoogleMail:
     __attachment_filename = None
     __custom_logger = None
 
-    def __init__(self, email_subject, email_body, attachment_file, attachment_filename, path_manipulation_class):
-        self.__custom_logger = CustomLogger('SendEmailWithGoogleMailClass').custom_logger(logging.INFO)
-        self.__custom_logger.info(f'Initializing SendEmailWithGoogleMail Class. Parameters: '
-                                  f'{email_subject}, {email_body}, {attachment_file}, {attachment_filename},'
-                                  f'{path_manipulation_class}'
-                                  )
-        self.__path_class = path_manipulation_class
-        self.__creds_class = CustomCredentialsManager(self.__path_class)
-        self.__config_class = Configuration()
+    def __init__(self, email_subject, email_body, attachment_file, attachment_filename, config_class):
+        self.__config_class = config_class
+        self.__custom_logger = CustomLogger('SendEmailWithGoogleMailClass').custom_logger(
+            self.__config_class.get_log_level_from_log_key("send_mail_with_google_mail_log_level")
+        )
+        self.__creds_class = CustomCredentialsManager(
+            self.__config_class,
+            self.__config_class.get_log_level_from_log_key("custom_credential_manager_log_level")
+        )
         self.__email_subject = email_subject
         self.__email_body = email_body
         self.__attachment_file = attachment_file
         self.__attachment_filename = attachment_filename
         self.__gmail_env_file = self.__config_class.get_value_from_env_file(
-                                        os.path.join(self.__path_class.get_env_path(), '.gmail-env')
+                                        os.path.join(self.__config_class.get_env_path(), '.gmail-env')
                                         )
+        self.__custom_logger.info(
+            f'Initializing SendEmailWithGoogleMail Class. Parameters: {email_subject}, {email_body}, {attachment_file}, {attachment_filename}'
+        )
 
     def send_email(self, with_attachments, maintype=None, subtype=None):
         """Method to send an email with the Google Mail API service.

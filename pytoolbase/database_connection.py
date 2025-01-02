@@ -7,7 +7,6 @@ from .my_logger import CustomLogger
 class Database:
     __instance = None
     __config_class = None
-    __path_man_class = None
     __custom_logger = None
     __general_env_path = None
     __general_env_secrets = None
@@ -18,14 +17,14 @@ class Database:
             cls.__instance = super(Database, cls).__call__(*args, **kwargs)
         return cls.__instance
 
-    def __init__(self, path_manipulation_class, configuration_class, log_level):
+    def __init__(self, configuration_class):
         self.__config_class = configuration_class
-        self.__custom_logger = CustomLogger('DatabaseClass').custom_logger(log_level)
-        self.__path_man_class = path_manipulation_class
-        self.__general_env_path = self.__path_man_class.get_general_env_file()
-        self.__general_env_secrets = self.__config_class.get_value_from_env_file(self.__general_env_path)
+        self.__custom_logger = CustomLogger('DatabaseClass').custom_logger(
+            self.__config_class.get_log_level_from_log_key("database_class_log_level")
+        )
+        self.__general_env_secrets = self.__config_class.load_env_file()
         self.__custom_logger.info(
-            f'Initializing Database Class. Parameters: {path_manipulation_class}, {configuration_class}, {log_level}'
+            f'Initializing Database Class. Parameters: {configuration_class}'
         )
 
     def connect_to_database(self, environment, country):
@@ -34,11 +33,10 @@ class Database:
         #TODO Take the value from .env file instead of hardcoding it
         jar_path = r'.\external_files\jt400-11.1.jar'
 
-        country_env_path = self.__path_man_class.get_country_env_file(
+        country_env_secrets = self.__config_class.load_env_file(
             environment=environment,
             country=country
         )
-        country_env_secrets = self.__config_class.get_value_from_env_file(country_env_path)
 
         jdbc_driver = self.__general_env_secrets["jdbc_driver"]
         jdbc = self.__general_env_secrets["jdbc"]
@@ -64,17 +62,17 @@ class Database:
 
 class Queries:
     __custom_logger = None
-    __path_class = None
     __config_class = None
     __query_path = None
 
-    def __init__(self, path_manipulation_class, configuration_class, log_level):
+    def __init__(self, configuration_class):
         self.__config_class = configuration_class
-        self.__custom_logger = CustomLogger('QueriesClass').custom_logger(log_level)
-        self.__path_class = path_manipulation_class
-        self.__query_path = self.__path_class.get_queries_path()
+        self.__custom_logger = CustomLogger('QueriesClass').custom_logger(
+            self.__config_class.get_log_level_from_log_key("queries_class_log_level")
+        )
+        self.__query_path = self.__config_class.get_queries_path()
         self.__custom_logger.info(
-            f'Initializing Queries Class. Parameters: {path_manipulation_class}, {configuration_class}, {log_level}'
+            f'Initializing Queries Class. Parameters: {configuration_class}'
         )
 
     def get_pandas_df_from_query(self, query_file, connection, parameters):
