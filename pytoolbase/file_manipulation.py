@@ -241,17 +241,17 @@ class FilesAndFoldersManipulations:
 
         self.__custom_file_class.copy_file_to_remote_folder(local_excel_path, remote_file_path)
 
-    def delete_logs(self):
+    def delete_yesterday_logs(self, logs_path):
         self.__custom_logger.info(f'delete_logs')
         yesterday = (datetime.now() + timedelta(days=-1)).strftime("%Y-%m-%d")
 
-        for fl in glob.glob(f'./logs/{yesterday}-*'):
+        for fl in glob.glob(f'{logs_path}/{yesterday}-*'):
             self.__custom_logger.info(f'Deleting file {fl}')
             os.remove(fl)
 
-    def delete_working_files(self):
+    def delete_working_files(self, working_files_path):
         self.__custom_logger.info(f'delete_working_files')
 
-        for fl in glob.glob('./external_files/*.xlsx'):
+        for fl in glob.glob(f'{working_files_path}'):
             self.__custom_logger.info(f'Deleting file {fl}')
             os.remove(fl)
