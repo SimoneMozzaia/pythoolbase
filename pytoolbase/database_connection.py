@@ -30,9 +30,6 @@ class Database:
     def connect_to_database(self, environment, country):
         self.__custom_logger.info(f"connect_to_database. Parameters: {environment}, {country}")
 
-        #TODO Take the value from .env file instead of hardcoding it
-        jar_path = r'.\external_files\jt400-11.1.jar'
-
         country_env_secrets = self.__config_class.load_env_file(
             environment=environment,
             country=country
@@ -52,7 +49,7 @@ class Database:
                 user
                 , password
             ],
-            jar_path
+            self.__config_class.load_env_file()["jt400_jar_path"]
         )
 
         self.__custom_logger.debug(f"Established database connection {connection}.")

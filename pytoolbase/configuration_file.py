@@ -140,6 +140,7 @@ class Configuration:
 
         except Exception('Critical failure while loading json'):
             self.__custom_logger.critical(f'Cannot load json file {json_file}. File does not exists.')
+            sys.exit(97)
 
     def get_log_level_from_log_key(self, log_key):
         string = self.__loaded_env_file[log_key]

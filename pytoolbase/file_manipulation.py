@@ -51,13 +51,13 @@ class CustomFile:
         self.__custom_logger.debug(f"Dataframe {pandas_dataframe}.")
         
         pandas_dataframe.to_csv(
-            csv_file_path
-            , encoding='utf-8'
-            , header=True
-            , doublequote=True
-            , sep=','
-            , index=False
-            , decimal='.'
+            csv_file_path,
+            encoding='utf-8',
+            header=True,
+            doublequote=True,
+            sep=',',
+            index=False,
+            decimal='.'
         )
         self.__custom_logger.debug(f"Created csv file {csv_file_path}.")
 
@@ -255,4 +255,3 @@ class FilesAndFoldersManipulations:
         for fl in glob.glob('./external_files/*.xlsx'):
             self.__custom_logger.info(f'Deleting file {fl}')
             os.remove(fl)
-
