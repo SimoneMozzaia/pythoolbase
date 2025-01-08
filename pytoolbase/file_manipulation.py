@@ -219,10 +219,10 @@ class FilesAndFoldersManipulations:
     def ending_program(self):
         self.__custom_logger.info(f'All operations completed. Ending program.')
 
-    def check_folders(self, general_env_file_path):
-        self.__custom_logger.info(f'check_folders. Parameters: {general_env_file_path}')
+    def check_folders(self):
+        self.__custom_logger.info(f'check_folders')
 
-        general_env_secrets = self.__config_class.get_value_from_env_file(general_env_file_path)
+        general_env_secrets = self.__config_class.load_env_file()
         backup_folder = general_env_secrets["backup_folder"]
 
         self.__custom_logger.info(f'Checking if {backup_folder} exists.')
@@ -237,7 +237,7 @@ class FilesAndFoldersManipulations:
         )
 
         if not self.__check_folders:
-            self.check_folders(general_env_file_path)
+            self.check_folders()
 
         self.__custom_file_class.copy_file_to_remote_folder(local_excel_path, remote_file_path)
 
