@@ -1,54 +1,51 @@
-# Python toolbox
+# pytoolbase
 
-Small Python toolbox containing various functionalities.
+A small, Windows-first toolbox of reusable utilities for scripts and probes.
 
-## Introduction
-Tired of coding the same chunks of code or copying and pasting existing ones, I've decided 
-to share some of my most used functions while refactoring some.
+## Goals
 
-## Tech Stack
-The project is written in Python
+- PEP8 compliant, pythonic code
+- Fail-fast behavior (exceptions, no silent best-effort)
+- Optional dependencies via `extras`
+- Usable from both NAS paths and Git repos
 
 ## Installation
-Just the clone repo and use the functions that interest you
 
-# Usage 
-```
-Clone the repository
+From a NAS path:
 
-Copy the requirements.txt inside your python package folder
-Copy the folder "external_files" inside your python package folder
-
-Install the package and the requirements in your virtualenv with pip 
-    pip install C:\custom_apps\programming_languages\repositories\pytoolbase
-    pip install -r requirements.txt
-
-Import the package and its functions
-```
-Example
-
-```python
-from pytoolbase.database_connection import Database
-from pytoolbase.path_manipulation import PathManipulation
-
-def main():
-    pt = PathManipulation("env_path", "secrets_path", "queries_path")
-    db = Database(pt)
-    # ...
-    connection = db.connect_to_database("env","country")
-    # ...
-    connection.close()
-    # ...
-
-main()
+```powershell
+pip install \\NAS\share\pytoolbase
 ```
 
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to add or change.
+With extras:
 
-## Notes
-As of now, it's just a boilerplate of different things. WORK IN PROGRESS....
+```powershell
+pip install "pytoolbase[excel,db]"
+```
 
-## License
-[GPL 3.0](https://choosealicense.com/licenses/gpl-3.0/)
+## Directory conventions
+
+Set `PYTOOLBASE_ROOT` to a folder that contains (by convention):
+
+- `env/` (dotenv files)
+- `secrets/` (credentials, tokens)
+- `queries/` (SQL files)
+- `logs/` (log files)
+
+`PathContext` will *not* create any folder automatically.
+
+## Environment keys (general `.env`)
+
+- `jdbc_driver`
+- `jdbc_url_prefix`
+- `jt400_jar_path`
+
+Country env file naming:
+
+- `.<COUNTRY>-<ENV>-env` (e.g. `.IT-prod-env`)
+
+Country env keys typically include:
+
+- `db_host`
+- `db_user`
+- `db_password`

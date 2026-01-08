@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pytoolbase"
+version = "1.0.1"
+description = "Utility toolbox for scripts and probes (Windows-first)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Simone Mozzaia"}]
+dependencies = [
+  "python-dotenv>=1.0.0",
+  "requests>=2.31.0",
+]
+
+[project.optional-dependencies]
+db = [
+  "jaydebeapi>=1.2.3",
+  "pandas>=2.0.0",
+]
+excel = [
+  "openpyxl>=3.1.2",
+  "xlwings>=0.30.0",
+  "formulas>=1.2.7",
+]
+dev = [
+  "pytest>=8.0.0",
+  "ruff>=0.6.0",
+  "mypy>=1.7.0",
+  "types-requests>=2.31.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
