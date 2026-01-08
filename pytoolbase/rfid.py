@@ -1,13 +1,14 @@
 from epc import utils
 from epc.schemes import SGTIN
+import logging
 from .my_logger import CustomLogger
 
 
 class EpcConverter:
     __custom_logger = None
 
-    def __init__(self, log_level):
-        self.__custom_logger = CustomLogger('EpcConverterClass').custom_logger(log_level)
+    def __init__(self):
+        self.__custom_logger = CustomLogger('EpcConverterClass').custom_logger(logging.WARNING)
 
     def matricola_to_epc(self, matricola):
         gtin = matricola[0:13]

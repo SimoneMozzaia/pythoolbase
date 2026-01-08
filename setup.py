@@ -1,15 +1,12 @@
-from setuptools import find_packages, setup
+from setuptools import setup
 
-
-setup(
-      name="pytoolbase",
-      version="0.4",
+setup(name="pytoolbase",
+      version="0.2",
       description="Python Utilities",
       author="Simone Mozzaia",
       author_email='info@simonemozzaia.it"',
-      platforms=["win32"],  # or more specific, e.g. "win32", "cygwin", "osx"
+      platforms=["any"],  # or more specific, e.g. "win32", "cygwin", "osx"
       license="GPLv3",
       url="https://github.com/SimoneMozzaia/pythoolbase",
-      packages=find_packages(),
-      include_package_data=True
-)
+      packages=['pytoolbase',]
+      )

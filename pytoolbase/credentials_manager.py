@@ -3,12 +3,13 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from .my_logger import CustomLogger
 import os
+import logging
 
 
 class CustomCredentialsManager:
     __custom_logger = None
     __token_path = None
-    __config_class = None
+    __path_class = None
     __user_scopes = [
         'https://www.googleapis.com/auth/gmail.compose'
     ]
@@ -19,13 +20,13 @@ class CustomCredentialsManager:
     __user_cred_file_path = None
     __service_acc_cred_file_path = None
 
-    def __init__(self, config_class, log_level):
-        self.__custom_logger = CustomLogger('CustomCredentialsManager').custom_logger(log_level)
-        self.__config_class = config_class
-        self.__token_path = self.__config_class.get_token_path()
-        self.__user_cred_file_path = self.__config_class.get_user_credentials_path()
-        self.__service_acc_cred_file_path = self.__config_class.get_service_account_credentials_path()
-        self.__custom_logger.info(f'Initializing CustomCredentialsManager Class. Parameter: {config_class}')
+    def __init__(self, path_manipulation_class):
+        self.__custom_logger = CustomLogger('CustomCredentialsManager').custom_logger(logging.DEBUG)
+        self.__path_class = path_manipulation_class
+        self.__token_path = self.__path_class.get_token_path()
+        self.__user_cred_file_path = self.__path_class.get_user_credentials_path()
+        self.__service_acc_cred_file_path = self.__path_class.get_service_account_credentials_path()
+        self.__custom_logger.info(f'Initializing CustomCredentialsManager Class. Parameter: {path_manipulation_class}')
 
     def get_user_scopes(self):
         self.__custom_logger.info(f'get_user_scopes')

@@ -6,7 +6,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-.idea
+.idea/*
 
 # Secrets
 pytoolbase/secrets/
@@ -40,6 +40,7 @@ share/python-wheels/
 MANIFEST
 *.sln
 *.pyproj
+*/external_files/*
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
